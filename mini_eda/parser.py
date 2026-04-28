@@ -49,21 +49,10 @@ def parse_logic_file(file_path):
         elif logic_line.startswith("OUT:"):
             output_signals = parse_signal_list(logic_line, "OUT:")
 
-    circuit = {
+    parsed_circuit = {
         "inputs": input_signals,
         "gates": gates,
         "outputs": output_signals
     }
 
-    return circuit
-
-
-circuit = parse_logic_file("circuits/half_adder.logic")
-
-print("Inputs:", circuit["inputs"])
-print("Gates:")
-
-for gate in circuit["gates"]:
-    print(gate)
-
-print("Outputs:", circuit["outputs"])
+    return parsed_circuit

@@ -90,6 +90,363 @@ This project helped me practice:
 2. Gate level circuit representation
 3. Verilog RTL generation
 4. Truth table based verification
+GATE A1 AND A B -> CARRY
+
+OUT: SUM, CARRY
+```
+
+Then it produces structured circuit data, generated Verilog, truth table output, and a simplified timing report.
+
+---
+
+## Main Flow
+
+```text
+.logic file
+    ↓
+Python parser
+    ↓
+Internal circuit representation
+    ↓
+Verilog generator
+    ↓
+Logic simulator
+    ↓
+Truth table generator
+    ↓
+Timing reporter
+```
+
+---
+
+## Why I Built This
+
+I built this project to strengthen my understanding of hardware design automation, digital logic, Verilog generation, circuit representation, and debugging workflows used in silicon design environments.
+
+The goal was not to build a real commercial synthesis tool. The goal was to build a small but complete educational EDA style pipeline that shows how a circuit can be parsed, represented, translated, simulated, checked, and analyzed.
+
+This project helped me practice:
+
+1. Python file parsing
+2. Gate level circuit representation
+3. Verilog RTL generation
+4. Truth table based verification
+5. Simplified timing analysis
+6. Parser validation and debugging
+7. Hardware focused software design
+8. Clean project documentation and testing
+
+---
+
+## Features
+
+| Feature | Status | Description |
+|---|---:|---|
+| Custom `.logic` input format | Complete | Reads simple gate level circuit descriptions |
+| Parser | Complete | Extracts inputs, gates, gate inputs, gate outputs, and output signals |
+| Internal circuit representation | Complete | Stores circuits using Python dictionaries and structured data |
+| Verilog generation | Complete | Generates synthesizable Verilog modules |
+| Logic simulation | Complete | Evaluates circuit outputs for a given input combination |
+| Truth table generation | Complete | Generates all possible input combinations and output values |
+| Simplified timing analysis | Complete | Assigns toy gate delays and reports critical output paths |
+| Error checking | Complete | Detects invalid gates, missing arrows, malformed lines, and bad connectivity |
+| CLI support | Complete | Runs parser, Verilog generation, truth table, and timing from the terminal |
+| pytest tests | Complete | Tests parser, exporter, simulator, and timing behavior |
+
+---
+
+## Supported Gates
+
+| Gate | Description | Verilog Operator |
+|---|---|---|
+| AND | Logic AND | `&` |
+| OR | Logic OR | `|` |
+| XOR | Logic XOR | `^` |
+| NOT | Logic inversion | `~` |
+| NAND | Inverted AND | `~(...)` |
+| NOR | Inverted OR | `~(...)` |
+| MUX | 2 to 1 multiplexer | `sel ? b : a` |
+
+---
+
+## Example Input File
+
+File:
+
+```text
+circuits/half_adder.logic
+```
+
+Content:
+
+```text
+IN: A, B
+
+GATE X1 XOR A B -> SUM
+GATE A1 AND A B -> CARRY
+
+OUT: SUM, CARRY
+```
+
+This describes a half adder.
+
+The XOR gate generates the sum output.
+
+The AND gate generates the carry output.
+
+---
+
+## Generated Verilog Example
+
+The tool generates:
+
+```verilog
+module half_adder(
+    input A,
+    input B,
+    output SUM,
+    output CARRY
+);
+
+assign SUM = A ^ B;
+assign CARRY = A & B;
+
+endmodule
+```
+
+---
+
+## Generated Truth Table Example
+
+```text
+A B | SUM CARRY
+0 0 | 0   0
+0 1 | 1   0
+1 0 | 1   0
+1 1 | 0   1
+```
+
+---
+
+## Generated Timing Report Example
+
+```text
+Timing Report
+
+Output: SUM
+Critical path: A -> X1 -> SUM
+Delay: 4 units
+
+Output: CARRY
+Critical path: A -> A1 -> CARRY
+Delay: 3 units
+
+Worst output: SUM
+Critical delay: 4 units
+```
+
+The timing numbers are not real standard cell timing numbers. They come from a simplified gate delay model used for educational timing analysis.
+
+---
+
+## Toy Delay Library
+
+| Gate | Delay |
+|---|---:|
+| NOT | 1 unit |
+| NAND | 2 units |
+| NOR | 2 units |
+| AND | 3 units |
+| OR | 3 units |
+| XOR | 4 units |
+| MUX | 5 units |
+
+---
+
+## Project Structure
+
+```text
+mini_logic_eda/
+│
+├── circuits/
+│   ├── half_adder.logic
+│   ├── full_adder.logic
+│   └── mux2.logic
+│
+├── mini_eda/
+│   ├── __init__.py
+│   ├── circuit.py
+│   ├── parser.py
+│   ├── verilog_exporter.py
+│   ├── simulator.py
+│   ├── truth_table.py
+│   ├── timing.py
+│   ├── errors.py
+│   └── cli.py
+│
+├── tests/
+│   ├── test_parser.py
+│   ├── test_verilog_exporter.py
+│   ├── test_simulator.py
+│   ├── test_truth_table.py
+│   └── test_timing.py
+│
+├── outputs/
+│   ├── half_adder.v
+│   ├── half_adder_truth_table.txt
+│   ├── half_adder_timing.txt
+│   └── debug_summary.txt
+│
+├── README.md
+├── requirements.txt
+└── main.py
+```
+
+---
+
+## File Descriptions
+
+| File | Purpose |
+|---|---|
+| `circuits/half_adder.logic` | Example half adder circuit |
+| `circuits/full_adder.logic` | Example full adder circuit |
+| `circuits/mux2.logic` | Example 2 to 1 mux circuit |
+| `mini_eda/parser.py` | Parses `.logic` files into structured circuit data |
+| `mini_eda/circuit.py` | Defines circuit and gate representation |
+| `mini_eda/verilog_exporter.py` | Generates synthesizable Verilog |
+| `mini_eda/simulator.py` | Simulates logic behavior for one input case |
+| `mini_eda/truth_table.py` | Generates full truth tables |
+| `mini_eda/timing.py` | Performs simplified critical path timing analysis |
+| `mini_eda/errors.py` | Handles parser and validation errors |
+| `mini_eda/cli.py` | Handles command line options |
+| `tests/` | Contains pytest regression tests |
+| `outputs/` | Stores generated Verilog, truth tables, and timing reports |
+| `main.py` | Main program entry point |
+
+---
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/mini_logic_eda.git
+cd mini_logic_eda
+```
+
+Create a virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate the virtual environment on Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+For v0.1, the only required dependency may be:
+
+```text
+pytest
+```
+
+---
+
+## Usage
+
+Run all outputs for a circuit:
+
+```bash
+python main.py circuits/half_adder.logic --all
+```
+
+Generate Verilog only:
+
+```bash
+python main.py circuits/half_adder.logic --verilog
+```
+
+Generate a truth table only:
+
+```bash
+python main.py circuits/half_adder.logic --truth-table
+```
+
+Generate a timing report only:
+
+```bash
+python main.py circuits/half_adder.logic --timing
+```
+
+Parse and print circuit structure:
+
+```bash
+python main.py circuits/half_adder.logic --parse
+```
+
+---
+
+## Example Parser Output
+
+```text
+Inputs: ['A', 'B']
+
+Gates:
+{'name': 'X1', 'type': 'XOR', 'inputs': ['A', 'B'], 'output': 'SUM'}
+{'name': 'A1', 'type': 'AND', 'inputs': ['A', 'B'], 'output': 'CARRY'}
+
+Outputs: ['SUM', 'CARRY']
+```
+
+---
+
+## .logic File Format
+
+The `.logic` format is intentionally simple.
+
+A circuit has three main sections:
+
+```text
+IN: input1, input2, input3
+
+GATE gate_name gate_type input1 input2 -> output
+
+OUT: output1, output2
+```
+
+Example:
+
+```text
+IN: A, B, CIN
+
+GATE X1 XOR A B -> XOR_AB
+GATE X2 XOR XOR_AB CIN -> SUM
+GATE A1 AND A B -> CARRY_AB
+GATE A2 AND XOR_AB CIN -> CARRY_CIN
+GATE O1 OR CARRY_AB CARRY_CIN -> COUT
+
+OUT: SUM, COUT
+```
+
+---
+
+## Design Decisions
+
+### Simple Text Format
+
+The project uses a custom `.logic` format to keep the first version focused on the parsing, simulation, and generation engine.
+
+### Gate Level Representation
+
+Each gate is represented internally with:
 5. Simplified timing analysis
 6. Parser validation and debugging
 7. Hardware focused software design

@@ -1,0 +1,3 @@
+IN: A, B
+
+GATE X1 AND A B -> Y
